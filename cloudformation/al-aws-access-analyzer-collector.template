@@ -226,7 +226,7 @@
                         }
                     ]
                 },
-                "Handler": "service.handler",
+                "Handler": "al_aws_access_analyzer_collector_function.handler",
                 "Description": "Alert Logic IAM Access Analyzer Collector.",
                 "Environment": {
                     "Variables": {
