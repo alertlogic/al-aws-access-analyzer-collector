@@ -8,7 +8,7 @@ Active IAM Access Analyzer findings will appear as vulnerabilities and remediati
 ### Deploy prepackaged CloudFormation
 #### Create Access Key for your account
 
-. Authenticate with Alert Logic portal
+1. Authenticate with Alert Logic portal
 ```curl -X POST -u username:password https://api.global-services.global.alertlogic.com/aims/v1/authenticate```
 2. Create Access Key.
 ```curl -H 'x-aims-auth-token: {token}' -X POST https://api.global-services.global.alertlogic.com/aims/v1/{user.account_id}/users/{user.id}/access_keys```
