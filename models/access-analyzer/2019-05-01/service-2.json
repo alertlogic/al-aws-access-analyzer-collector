@@ -1,0 +1,552 @@
+{
+  "version": "2.0",
+  "metadata": {
+    "apiVersion": "2019-05-01",
+    "endpointPrefix": "access-analyzer",
+    "jsonVersion": "1.1",
+    "protocol": "rest-json",
+    "serviceFullName": "AWS IAM Access Analyzer API",
+    "serviceId": "Citadel",
+    "signatureVersion": "v4",
+    "signingName": "access-analyzer",
+    "uid": "access-analyzer-2019-05-01"
+  },
+  "documentation": null,
+  "operations": {
+    "CreateAnalyzer": {
+      "name": "CreateAnalyzer",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/analyzer",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "CreateAnalyzerRequest"
+      },
+      "output": {
+        "shape": "CreateAnalyzerResponse"
+      },
+      "errors": [
+        {
+          "shape": "AccessDeniedException"
+        },
+        {
+          "shape": "InternalServerException"
+        },
+        {
+          "shape": "ServiceQuotaExceededException"
+        },
+        {
+          "shape": "ThrottlingException"
+        },
+        {
+          "shape": "ValidationException"
+        }
+      ],
+      "idempotent": true
+    },
+    "ListFindings": {
+      "name": "ListFindings",
+      "http": {
+        "method": "POST",
+        "requestUri": "/finding",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListFindingsRequest"
+      },
+      "output": {
+        "shape": "ListFindingsResponse"
+      },
+      "errors": [
+        {
+          "shape": "AccessDeniedException"
+        },
+        {
+          "shape": "InternalServerException"
+        },
+        {
+          "shape": "ResourceNotFoundException"
+        },
+        {
+          "shape": "ThrottlingException"
+        },
+        {
+          "shape": "ValidationException"
+        }
+      ]
+    },
+    "ListAnalyzers": {
+      "name": "ListAnalyzers",
+      "http": {
+        "method": "GET",
+        "requestUri": "/analyzer",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListAnalyzersRequest"
+      },
+      "output": {
+        "shape": "ListAnalyzersResponse"
+      },
+      "errors": [
+        {
+          "shape": "AccessDeniedException"
+        },
+        {
+          "shape": "InternalServerException"
+        },
+        {
+          "shape": "ThrottlingException"
+        },
+        {
+          "shape": "ValidationException"
+        }
+      ]
+    }
+  },
+  "shapes": {
+    "ActionList": {
+      "type": "list",
+      "member": {
+        "shape": "String"
+      }
+    },
+    "ValidationExceptionFieldList": {
+      "type": "list",
+      "member": {
+        "shape": "ValidationExceptionField"
+      }
+    },
+    "AnalyzerSummary": {
+      "type": "structure",
+      "required": [
+        "arn",
+        "name",
+        "type"
+      ],
+      "members": {
+        "arn": {
+          "shape": "AnalyzerArn"
+        },
+        "lastResourceEvaluated": {
+          "shape": "String"
+        },
+        "lastResourceEvaluatedAt": {
+          "shape": "Timestamp"
+        },
+        "name": {
+          "shape": "Name"
+        },
+        "type": {
+          "shape": "Type"
+        }
+      }
+    },
+    "ValidationException": {
+      "type": "structure",
+      "required": [
+        "message",
+        "reason"
+      ],
+      "members": {
+        "fieldList": {
+          "shape": "ValidationExceptionFieldList"
+        },
+        "message": {
+          "shape": "String"
+        },
+        "reason": {
+          "shape": "ValidationExceptionReason"
+        }
+      },
+      "exception": true,
+      "error": {
+        "code": "ValidationException",
+        "httpStatusCode": 400,
+        "senderFault": true
+      }
+    },
+    "Finding": {
+      "type": "structure",
+      "required": [
+        "condition",
+        "id",
+        "lastChecked",
+        "resourceType",
+        "status",
+        "updatedAt"
+      ],
+      "members": {
+        "action": {
+          "shape": "ActionList"
+        },
+        "condition": {
+          "shape": "ConditionKeyMap"
+        },
+        "error": {
+          "shape": "String"
+        },
+        "id": {
+          "shape": "FindingId"
+        },
+        "lastChecked": {
+          "shape": "Timestamp"
+        },
+        "principal": {
+          "shape": "PrincipalMap"
+        },
+        "resource": {
+          "shape": "String"
+        },
+        "resourceType": {
+          "shape": "String"
+        },
+        "status": {
+          "shape": "String"
+        },
+        "updatedAt": {
+          "shape": "Timestamp"
+        }
+      }
+    },
+    "CreateAnalyzerResponse": {
+      "type": "structure",
+      "members": {
+        "arn": {
+          "shape": "AnalyzerArn"
+        }
+      }
+    },
+    "PrincipalMap": {
+      "type": "map",
+      "key": {
+        "shape": "String"
+      },
+      "value": {
+        "shape": "String"
+      }
+    },
+    "OrderBy": {
+      "type": "string",
+      "enum": [
+        "ASC",
+        "DESC"
+      ]
+    },
+    "ConditionKeyMap": {
+      "type": "map",
+      "key": {
+        "shape": "String"
+      },
+      "value": {
+        "shape": "String"
+      }
+    },
+    "ValidationExceptionField": {
+      "type": "structure",
+      "required": [
+        "message",
+        "name"
+      ],
+      "members": {
+        "message": {
+          "shape": "String"
+        },
+        "name": {
+          "shape": "String"
+        }
+      }
+    },
+    "ListAnalyzersResponse": {
+      "type": "structure",
+      "required": [
+        "analyzers"
+      ],
+      "members": {
+        "nextToken": {
+          "shape": "Token"
+        },
+        "analyzers": {
+          "shape": "AnalyzersList"
+        }
+      }
+    },
+    "Criterion": {
+      "type": "structure",
+      "members": {
+        "contains": {
+          "shape": "ValueList"
+        },
+        "eq": {
+          "shape": "ValueList"
+        },
+        "neq": {
+          "shape": "ValueList"
+        }
+      }
+    },
+    "String": {
+      "type": "string"
+    },
+    "AccessDeniedException": {
+      "type": "structure",
+      "required": [
+        "message"
+      ],
+      "members": {
+        "message": {
+          "shape": "String"
+        }
+      },
+      "exception": true,
+      "error": {
+        "code": "AccessDeniedException",
+        "httpStatusCode": 403,
+        "senderFault": true
+      }
+    },
+    "InternalServerException": {
+      "type": "structure",
+      "required": [
+        "message"
+      ],
+      "members": {
+        "message": {
+          "shape": "String"
+        },
+        "retryAfterSeconds": {
+          "shape": "Integer",
+          "location": "header",
+          "locationName": "Retry-After"
+        }
+      },
+      "exception": true,
+      "error": {
+        "code": "InternalServerException",
+        "httpStatusCode": 500,
+        "fault": true
+      }
+    },
+    "ListFindingsResponse": {
+      "type": "structure",
+      "required": [
+        "findings"
+      ],
+      "members": {
+        "findings": {
+          "shape": "FindingsList"
+        },
+        "nextToken": {
+          "shape": "Token"
+        }
+      }
+    },
+    "FilterCriteriaMap": {
+      "type": "map",
+      "key": {
+        "shape": "String"
+      },
+      "value": {
+        "shape": "Criterion"
+      }
+    },
+    "SortCriteria": {
+      "type": "structure",
+      "members": {
+        "attributeName": {
+          "shape": "String"
+        },
+        "orderBy": {
+          "shape": "OrderBy"
+        }
+      }
+    },
+    "AnalyzersList": {
+      "type": "list",
+      "member": {
+        "shape": "AnalyzerSummary"
+      }
+    },
+    "CreateAnalyzerRequest": {
+      "type": "structure",
+      "required": [
+        "name",
+        "type"
+      ],
+      "members": {
+        "name": {
+          "shape": "Name"
+        },
+        "type": {
+          "shape": "Type"
+        }
+      }
+    },
+    "ValidationExceptionReason": {
+      "type": "string",
+      "enum": [
+        "cannotParse",
+        "fieldValidationFailed",
+        "other",
+        "unknownOperation"
+      ]
+    },
+    "ServiceQuotaExceededException": {
+      "type": "structure",
+      "required": [
+        "message",
+        "resourceId",
+        "resourceType"
+      ],
+      "members": {
+        "message": {
+          "shape": "String"
+        },
+        "resourceId": {
+          "shape": "String"
+        },
+        "resourceType": {
+          "shape": "String"
+        }
+      },
+      "exception": true,
+      "error": {
+        "code": "ServiceQuotaExceededException",
+        "httpStatusCode": 402,
+        "senderFault": true
+      }
+    },
+    "ThrottlingException": {
+      "type": "structure",
+      "required": [
+        "message"
+      ],
+      "members": {
+        "message": {
+          "shape": "String"
+        },
+        "retryAfterSeconds": {
+          "shape": "Integer",
+          "location": "header",
+          "locationName": "Retry-After"
+        }
+      },
+      "exception": true,
+      "error": {
+        "code": "ThrottlingException",
+        "httpStatusCode": 429,
+        "senderFault": true
+      }
+    },
+    "ValueList": {
+      "type": "list",
+      "member": {
+        "shape": "String"
+      }
+    },
+    "FindingId": {
+      "type": "string"
+    },
+    "Type": {
+      "type": "string",
+      "enum": [
+        "ACCOUNT"
+      ]
+    },
+    "FindingsList": {
+      "type": "list",
+      "member": {
+        "shape": "Finding"
+      }
+    },
+    "Token": {
+      "type": "string"
+    },
+    "ResourceNotFoundException": {
+      "type": "structure",
+      "required": [
+        "message",
+        "resourceId",
+        "resourceType"
+      ],
+      "members": {
+        "message": {
+          "shape": "String"
+        },
+        "resourceId": {
+          "shape": "String"
+        },
+        "resourceType": {
+          "shape": "String"
+        }
+      },
+      "exception": true,
+      "error": {
+        "code": "ResourceNotFoundException",
+        "httpStatusCode": 404,
+        "senderFault": true
+      }
+    },
+    "AnalyzerArn": {
+      "type": "string",
+      "pattern": "^[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:analyzer/.{1,255}$"
+    },
+    "Name": {
+      "type": "string",
+      "min": 1,
+      "max": 255,
+      "pattern": "^[A-Za-z][A-Za-z0-9_,.@\\-]*$"
+    },
+    "Timestamp": {
+      "type": "timestamp"
+    },
+    "ListAnalyzersRequest": {
+      "type": "structure",
+      "members": {
+        "maxResults": {
+          "shape": "Integer",
+          "location": "querystring",
+          "locationName": "maxResults"
+        },
+        "nextToken": {
+          "shape": "Token",
+          "location": "querystring",
+          "locationName": "nextToken"
+        },
+        "type": {
+          "shape": "Type",
+          "location": "querystring",
+          "locationName": "type"
+        }
+      }
+    },
+    "Integer": {
+      "type": "integer",
+      "box": true
+    },
+    "ListFindingsRequest": {
+      "type": "structure",
+      "required": [
+        "analyzerArn"
+      ],
+      "members": {
+        "filter": {
+          "shape": "FilterCriteriaMap"
+        },
+        "maxResults": {
+          "shape": "Integer"
+        },
+        "nextToken": {
+          "shape": "Token"
+        },
+        "analyzerArn": {
+          "shape": "AnalyzerArn"
+        },
+        "sort": {
+          "shape": "SortCriteria"
+        }
+      }
+    }
+  }
+}
