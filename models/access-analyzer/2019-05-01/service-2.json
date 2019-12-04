@@ -6,7 +6,7 @@
     "jsonVersion": "1.1",
     "protocol": "rest-json",
     "serviceFullName": "AWS IAM Access Analyzer API",
-    "serviceId": "Citadel",
+    "serviceId": "access-analyzer",
     "signatureVersion": "v4",
     "signingName": "access-analyzer",
     "uid": "access-analyzer-2019-05-01"
