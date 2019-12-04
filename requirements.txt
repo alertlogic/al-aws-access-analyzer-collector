@@ -1,5 +1,5 @@
 boto3==1.10.14
-botocore==1.13.14
+botocore>=1.13.32
 certifi==2019.9.11
 chardet==3.0.4
 docutils==0.15.2
@@ -9,4 +9,4 @@ python-dateutil==2.8.0
 PyYAML==5.1.2
 six==1.13.0
 urllib3==1.25.6
-activewatch>=1.0.2
+activewatch==1.0.2

@@ -38,6 +38,6 @@ setup(
             'pycodestyle>=2.3.1'
         ],
     },
-    data_files=[('models/access-analyzer/2019-05-01', ['models/access-analyzer/2019-05-01/service-2.json'])],
+    data_files=[('models/accessanalyzer/2019-05-01', ['models/accessanalyzer/2019-05-01/service-2.json'])],
     keywords=['activewatch', 'alertlogic', 'aws', 'aws_access_analyzer', 'al_aws_access_analyzer_collector']
 )

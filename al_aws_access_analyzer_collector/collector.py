@@ -54,7 +54,7 @@ def collect(event, regions, clean_findings):
     # Get AWS Access Analyzer Findings
     iam_client = session.client('iam')
     for region in regions:
-        aws_access_analyzer_client = session.client("access-analyzer", region_name=region)
+        aws_access_analyzer_client = session.client("accessanalyzer", region_name=region)
         response = aws_access_analyzer_client.list_analyzers()
         analyzers = json.loads(json.dumps(response, default=str))['analyzers']
 

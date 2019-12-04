@@ -2,14 +2,14 @@
   "version": "2.0",
   "metadata": {
     "apiVersion": "2019-05-01",
-    "endpointPrefix": "access-analyzer",
+    "endpointPrefix": "accessanalyzer",
     "jsonVersion": "1.1",
     "protocol": "rest-json",
     "serviceFullName": "AWS IAM Access Analyzer API",
     "serviceId": "Citadel",
     "signatureVersion": "v4",
-    "signingName": "access-analyzer",
-    "uid": "access-analyzer-2019-05-01"
+    "signingName": "accessanalyzer",
+    "uid": "accessanalyzer-2019-05-01"
   },
   "documentation": null,
   "operations": {
