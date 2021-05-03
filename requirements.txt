@@ -6,7 +6,7 @@ docutils==0.15.2
 idna==2.8
 jmespath==0.9.4
 python-dateutil==2.8.0
-PyYAML==5.1.2
+pyyaml>=5.4.1
 six==1.13.0
 urllib3==1.25.6
 activewatch==1.0.2
