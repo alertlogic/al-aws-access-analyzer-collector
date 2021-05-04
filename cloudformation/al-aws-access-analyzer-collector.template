@@ -247,7 +247,7 @@
                                     "Ref": "AccountDataResidency"
                                 }
                             ]
-                        },
+                        }
                     }
                 },
                  "Role": {

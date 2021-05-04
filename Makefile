@@ -3,7 +3,7 @@ VIRTUAL_ENV_ACTIVATE_CMD := $(VIRTUAL_ENV_LOCATION)/bin/activate
 
 BUILD_DIRECTORY := build
 CFT_DIRECTORY := cloudformation
-CFT_TEMPLATE := al-aws-access-analyzer-collector.template
+CFT_TEMPLATE := al-aws-access-analyzer-collector.yaml
 
 PUBLIC_REPO_BUCKET := alertlogic-public-repo.us-east-1
 LAMBDA_PACKAGES_PREFIX := lambda_packages/
@@ -35,7 +35,7 @@ update_cft: | $(BUILD_DIRECTORY)/$(CFT_DIRECTORY)
 
 upload: update_cft dist
 	python setup.py lupload --s3-bucket=$(PUBLIC_REPO_BUCKET) --s3-prefix=$(LAMBDA_PACKAGES_PREFIX)
-	@aws s3 cp $(BUILD_DIRECTORY)/$(CFT_DIRECTORY)/$(CFT_TEMPLATE) s3://$(PUBLIC_REPO_BUCKET)/templates/al-aws-access-analyzer-collector.template
+	@aws s3 cp $(BUILD_DIRECTORY)/$(CFT_DIRECTORY)/$(CFT_TEMPLATE) s3://$(PUBLIC_REPO_BUCKET)/templates/$(CFT_TEMPLATE)
 
 virtualenv:
 	pip install virtualenv; virtualenv $(VIRTUAL_ENV_LOCATION)

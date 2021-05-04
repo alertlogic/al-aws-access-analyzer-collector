@@ -28,7 +28,8 @@ setup(
         'lambda_setuptools'
     ],
     install_requires=[
-        'activewatch>=1.0.2'
+        'alertlogic-sdk-python>=1.0.57',
+        'pyyaml>=5.4.1'
     ],
     extras_require={
         'dev': [
@@ -38,6 +39,5 @@ setup(
             'pycodestyle>=2.3.1'
         ],
     },
-    data_files=[('models/access-analyzer/2019-05-01', ['models/access-analyzer/2019-05-01/service-2.json'])],
     keywords=['activewatch', 'alertlogic', 'aws', 'aws_access_analyzer', 'al_aws_access_analyzer_collector']
 )
