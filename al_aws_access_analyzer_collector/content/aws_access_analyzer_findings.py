@@ -3,7 +3,7 @@ VULNERABILITIES = {
     "citadel-001": {
         "id": "iam-access-analyzer-001",
         "name": "IAM Access Analyzer IAM Finding",
-        "description": "IAM Access Analyzer analyzes any Trust policies applied to a role to determine whether that role is accessible by another AWS account or by a user that is not in your account, and reports them as a \"finding\". A IAM Access Analyzer IAM finding has been discovered in your account.",
+        "description": "For each instance of a resource that is shared outside of an account, Access Analyzer generates a finding. Findings include information about the access and the external principal that it is granted to. An IAM Access Analyzer IAM finding has been discovered in your account.",
         "remediation": "Review the IAM Access Analyzer findings for this account.",
         "resolution": "IAM Access Analyzer findings stay Active until they are archived, or the offending sharing policy is removed from the account. Review the findings for IAM roles and either archive the finding or remove the offending share policy.",
         "risk": "High",
@@ -14,12 +14,12 @@ VULNERABILITIES = {
         "pci_concern": "PCI DSS 3.2.1: Requirement 10: Track and monitor all access to network resources and cardholder data",
         "ccss_vector": "AV:N/AC:H/Au:N/C:C/I:C/A:C/PL:R/EM:A",
         "categories": ["IAM Access Analyzer", "security"],
-        "last_modified": "2019-11-14"
-        }, 
+        "last_modified": "2021-05-07"
+    },
     "citadel-002": {
         "id": "iam-access-analyzer-002",
         "name": "IAM Access Analyzer S3 Bucket Finding",
-        "description": "IAM Access Analyzer analyzes any Trust policies applied to a role to determine whether that role is accessible by another AWS account or by a user that is not in your account, and reports them as a \"finding\". A IAM Access Analyzer S3 Bucket finding has been discovered in your account.",
+        "description": "When Access Analyzer analyzes Amazon S3 buckets, it generates a finding when an Amazon S3 bucket policy, ACL, or access point applied to a bucket grants access to an external entity. An IAM Access Analyzer S3 Bucket finding has been discovered in your account.",
         "remediation": "Review the IAM Access Analyzer findings for this account.",
         "resolution": "IAM Access Analyzer findings stay Active until they are archived, or the offending sharing policy is removed from the account. Review the findings for S3 Buckets and either archive the finding or remove the offending share policy.",
         "risk": "High",
@@ -30,12 +30,12 @@ VULNERABILITIES = {
         "pci_concern": "PCI DSS 3.2.1: Requirement 10: Track and monitor all access to network resources and cardholder data",
         "ccss_vector": "AV:N/AC:H/Au:N/C:C/I:C/A:C/PL:R/EM:A",
         "categories": ["IAM Access Analyzer", "security"],
-        "last_modified": "2019-11-14"
-    }, 
+        "last_modified": "2021-05-07"
+    },
     "citadel-003": {
         "id": "iam-access-analyzer-003",
         "name": "IAM Access Analyzer KMS Finding",
-        "description": "IAM Access Analyzer analyzes any Trust policies applied to a role to determine whether that role is accessible by another AWS account or by a user that is not in your account, and reports them as a \"finding\". A IAM Access Analyzer KMS finding has been discovered in your account.",
+        "description": "For AWS KMS customer master keys (CMKs), Access Analyzer analyzes the key policies and grants applied to a key. Access Analyzer generates a finding if a key policy or grant allows an external entity to access the key. If the key policy doesn't allow the Access Analyzer role to read the key metadata, an Access Denied error finding is generated. An IAM Access Analyzer KMS finding has been discovered in your account.",
         "remediation": "Review the IAM Access Analyzer findings for this account.",
         "resolution": "IAM Access Analyzer findings stay Active until they are archived, or the offending sharing policy is removed from the account. Review the findings for KMS and either archive the finding or remove the offending share policy.",
         "risk": "High",
@@ -46,12 +46,12 @@ VULNERABILITIES = {
         "pci_concern": "PCI DSS 3.2.1: Requirement 10: Track and monitor all access to network resources and cardholder data",
         "ccss_vector": "AV:N/AC:H/Au:N/C:C/I:C/A:C/PL:R/EM:A",
         "categories": ["IAM Access Analyzer", "security"],
-        "last_modified": "2019-11-14"
-    }, 
+        "last_modified": "2021-05-07"
+    },
     "citadel-004": {
         "id": "iam-access-analyzer-004",
         "name": "IAM Access Analyzer Full Administrative Access IAM Role Finding",
-        "description": "IAM Access Analyzer analyzes any Trust policies applied to a role to determine whether that role is accessible by another AWS account or by a user that is not in your account, and reports them as a \"finding\". IAM policies should grant access on the principle of 'least-privilege', and avoid allowing full \"*:*\" administrative access. A IAM Access Analyzer full administrative access IAM finding has been discovered in your account.",
+        "description": "For each instance of a resource that is shared outside of an account, Access Analyzer generates a finding. Findings include information about the access and the external principal that it is granted to. An IAM Access Analyzer IAM finding with Full Administrative Access has been discovered in your account.",
         "remediation": "Review the IAM Access Analyzer findings for this account.",
         "resolution": "IAM Access Analyzer findings stay Active until they are archived, or the offending sharing policy is removed from the account. Review the findings for IAM Roles and either archive the finding or remove the offending share policy.",
         "risk": "High",
@@ -62,7 +62,38 @@ VULNERABILITIES = {
         "pci_concern": "PCI DSS 3.2.1: Requirement 10: Track and monitor all access to network resources and cardholder data",
         "ccss_vector": "AV:N/AC:L/Au:N\C:C/I:C/A:C/PL:A/EM:A",
         "categories": ["IAM Access Analyzer", "security"],
-        "last_modified": "2019-11-14"
+        "last_modified": "2021-05-07"
+    },
+	"citadel-005": {
+        "id": "iam-access-analyzer-005",
+        "name": "IAM Access Analyzer Lambda Finding",
+        "description": "For AWS Lambda functions, Access Analyzer analyzes policies, including condition statements in a policy, that grant access to the function to an external entity. Access Analyzer also analyzes permissions granted when using the AddPermission operation of the AWS Lambda API with an EventSourceToken. An IAM Access Analyzer Lambda finding has been discovered in your account.",
+        "remediation": "Review the IAM Access Analyzer findings for this account.",
+        "resolution": "IAM Access Analyzer findings stay Active until they are archived, or the offending sharing policy is removed from the account. Review the findings for KMS and either archive the finding or remove the offending share policy.",
+        "risk": "High",
+        "scope": "deployment",
+        "ccss_score": 7.6,
+        "resolution_type": "enable configuration",
+        "reference": "https://docs.aws.amazon.com/kms/latest/developerguide/control-access.html",
+        "pci_concern": "PCI DSS 3.2.1: Requirement 10: Track and monitor all access to network resources and cardholder data",
+        "ccss_vector": "AV:N/AC:H/Au:N/C:C/I:C/A:C/PL:R/EM:A",
+        "categories": ["IAM Access Analyzer", "security"],
+        "last_modified": "2021-05-07"
+    },
+	"citadel-006": {
+        "id": "iam-access-analyzer-006",
+        "name": "IAM Access Analyzer SQS Finding",
+        "description": "For Amazon SQS queues, Access Analyzer analyzes policies, including condition statements in a policy, that allow an external entity access to a queue. An IAM Access Analyzer SQS finding has been discovered in your account.",
+        "remediation": "Review the IAM Access Analyzer findings for this account.",
+        "resolution": "IAM Access Analyzer findings stay Active until they are archived, or the offending sharing policy is removed from the account. Review the findings for KMS and either archive the finding or remove the offending share policy.",
+        "risk": "High",
+        "scope": "deployment",
+        "ccss_score": 7.6,
+        "resolution_type": "enable configuration",
+        "reference": "https://docs.aws.amazon.com/kms/latest/developerguide/control-access.html",
+        "pci_concern": "PCI DSS 3.2.1: Requirement 10: Track and monitor all access to network resources and cardholder data",
+        "ccss_vector": "AV:N/AC:H/Au:N/C:C/I:C/A:C/PL:R/EM:A",
+        "categories": ["IAM Access Analyzer", "security"],
+        "last_modified": "2021-05-07"
     }
 }
-
