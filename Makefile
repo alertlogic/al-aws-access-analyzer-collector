@@ -3,7 +3,7 @@ VIRTUAL_ENV_ACTIVATE_CMD := $(VIRTUAL_ENV_LOCATION)/bin/activate
 
 BUILD_DIRECTORY := build
 CFT_DIRECTORY := cloudformation
-CFT_TEMPLATE := al-aws-access-analyzer-collector.yaml
+CFT_TEMPLATE := al-aws-access-analyzer-collector.template
 
 PUBLIC_REPO_BUCKET := alertlogic-public-repo.us-east-1
 LAMBDA_PACKAGES_PREFIX := lambda_packages/
