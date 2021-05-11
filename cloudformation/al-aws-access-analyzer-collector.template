@@ -1,333 +1,222 @@
-{
-    "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "A stack that sets up Alert Logic custom checks. You will be billed for the AWS resources used if you create a stack from this template. This template requires setting the \"Create IAM resources\" parameter to True.",
-    "Parameters": {
-        "AccountID": {
-            "Description": "Alert Logic Account ID",
-            "Type": "String"
-        },
-        "AccessKeyID": {
-            "Description": "API Access Key ID",
-            "Type": "String",
-            "MinLength": "5"
-        },
-        "SecretKey": {
-            "Description": "API Secret Key",
-            "Type": "String",
-            "NoEcho": "true",
-            "MinLength": "5"
-        },
-        "AccountDataResidency": {
-            "Description": "Account Data Residency",
-            "Type": "String",
-            "Default": "USA",
-            "AllowedValues": [
-                "USA",
-                "UK",
-                "Development"
-            ]
-        },
-        "EventSchedule": {
-            "Description": "Frequency of IAM Access Analyzer Findings Polling in minutes.",
-            "Type": "Number",
-            "Default": "60"
-        },
-        "FunctionsPrefix": {
-            "Description": "Generated Lambda Functions Prefix. All Lambda Functions created by this CloudFormation template will be prefixed with this value followed by '-' and function name. Leave this field empty if you want to use CloudFormation generated Lambda Functions names.",
-            "Type": "String"
-        },
-        "RolePrefix": {
-            "Description": "IAM Role Prefix. All IAM Roles created by this CloudFormation template will be prefixed with this value. Leave this field empty if you want to use CloudFormation generated IAM Role names.",
-            "Type": "String"
-        }
-    },
-    "Metadata": {
-        "AWS::CloudFormation::Interface": {
-            "ParameterGroups": [
-                {
-                    "Label": {
-                        "default": "Alert Logic API Parameters"
-                    },
-                    "Parameters": [
-            "AccountID",
-                        "AccessKeyID",
-                        "SecretKey",
-                        "AccountDataResidency"
-                    ]
-                },
-                {
-                    "Label": {
-                        "default": "Template Configuration"
-                    },
-                    "Parameters": [
-                        "FunctionsPrefix",
-                        "RolePrefix"
-                    ]
-                }
-            ],
-            "ParameterLabels": {
-                "AccountID": {
-                    "default": "Alert Logic Account ID"
-                },
-                "AccessKeyID": {
-                    "default": "Access Key ID"
-                },
-                "SecretKey": {
-                    "default": "Secret Key"
-                },
-                "DataResidency": {
-                    "default": "Account Data Residency"
-                }
-            }
-        }
-    },
-    "Mappings": {
-        "ToBoolean": {
-            "Enable": {
-                "Enable": "true",
-                "Disable": "false"
-            }
-        },
-        "ApiUrls": {
-            "urls": {
-                "USA": "api.cloudinsight.alertlogic.com",
-                "UK": "api.cloudinsight.alertlogic.co.uk",
-                "Development": "api.product.dev.alertlogic.com"
-            }
-        }
-    },
-    "Conditions": {
-        "HasFunctionsPrefix": {
-            "Fn::Not": [
-                {
-                    "Fn::Equals": [
-                        "",
-                        {
-                            "Ref": "FunctionsPrefix"
-                        }
-                    ]
-                }
-            ]
-        },
-        "HasRolePrefix": {
-            "Fn::Not": [
-                {
-                    "Fn::Equals": [
-                        "",
-                        {
-                            "Ref": "RolePrefix"
-                        }
-                    ]
-                }
-            ]
-        }
-    },
-    "Resources": {
-        "AlAWSAccessAnalyzerCollectorLambdaRole": {
-            "Type": "AWS::IAM::Role",
-            "Properties": {
-                "AssumeRolePolicyDocument": {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                        {
-                            "Effect": "Allow",
-                            "Principal": {
-                                "Service": "lambda.amazonaws.com"
-                            },
-                            "Action": "sts:AssumeRole"
-                        }
-                    ]
-                },
-                "RoleName": {
-                    "Fn::If": [
-                        "HasRolePrefix",
-                        {
-                            "Fn::Join": [
-                                "-",
-                                [
-                                    {
-                                        "Ref": "RolePrefix"
-                                    },
-                                    {
-                                        "Ref": "AWS::Region"
-                                    },
-                                    "AlAWSAccessAnalyzerCollectorRole"
-                                ]
-                            ]
-                        },
-                        {
-                            "Ref": "AWS::NoValue"
-                        }
-                    ]
-                }
-            }
-        },
-        "AlAWSAccessAnalyzerCollectorFunctionPolicy": {
-            "Type": "AWS::IAM::Policy",
-            "Properties": {
-                "PolicyName": "AlAWSAccessAnalyzerCollectorFunctionPolicy",
-                "Roles": [
-                    {
-                        "Ref": "AlAWSAccessAnalyzerCollectorLambdaRole"
-                    }
-                ],
-                "PolicyDocument": {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                        {
-                            "Effect": "Allow",
-                            "Action": "logs:CreateLogGroup",
-                            "Resource": "arn:aws:logs:*"
-                        },
-                        {
-                            "Effect": "Allow",
-                            "Action": [
-                                "logs:CreateLogStream",
-                                "logs:PutLogEvents"
-                            ],
-                            "Resource": [
-                                "arn:aws:logs:*"
-                            ]
-                        },
-                        {
-                            "Effect": "Allow",
-                            "Action": [
-                                "access-analyzer:ListFindings",
-                                "access-analyzer:ListAnalyzers"
-                            ],
-                            "Resource": "*"
-                        }
-                    ]
-                }
-            },
-            "DependsOn": [
-                "AlAWSAccessAnalyzerCollectorLambdaRole"
-            ]
-        },
-        "CreateAlAWSAccessAnalyzerCollectorFunction": {
-            "Type": "AWS::Lambda::Function",
-            "Properties": {
-                "FunctionName": {
-                    "Fn::If": [
-                        "HasFunctionsPrefix",
-                        {
-                            "Fn::Join": [
-                                "-",
-                                [
-                                    {
-                                        "Ref": "FunctionsPrefix"
-                                    },
-                                    "AlAWSAccessAnalyzerCollector"
-                                ]
-                            ]
-                        },
-                        {
-                            "Ref": "AWS::NoValue"
-                        }
-                    ]
-                },
-                "Handler": "al_aws_access_analyzer_collector_function.handler",
-                "Description": "Alert Logic IAM Access Analyzer Collector.",
-                "Environment": {
-                    "Variables": {
-                        "AccountId": {
-                            "Ref": "AccountID"
-                        },
-                        "AccessKeyId": {
-                            "Ref": "AccessKeyID"
-                        },
-                        "SecretKey": {
-                            "Ref": "SecretKey"
-                        },
-                        "Endpoint": {
-                            "Fn::FindInMap": [
-                                "ApiUrls",
-                                "urls",
-                                {
-                                    "Ref": "AccountDataResidency"
-                                }
-                            ]
-                        },
-                    }
-                },
-                 "Role": {
-                    "Fn::GetAtt": [
-                        "AlAWSAccessAnalyzerCollectorLambdaRole",
-                        "Arn"
-                    ]
-                },
-                "Code": {
-                    "S3Bucket": {
-                        "Fn::Join": [
-                            ".",
-                            [
-                                "alertlogic-public-repo",
-                                {
-                                    "Ref": "AWS::Region"
-                                }
-                            ]
-                        ]
-                    },
-                    "S3Key": {
-                        "Fn::Join": [
-                            "/",
-                            [
-                                "lambda_packages",
-                                "PACKAGE_PLACEHOLDER"
-                            ]
-                        ]
-                    }
-                },
-                "Runtime": "python3.7",
-                "Timeout": "900"
-            },
-            "DependsOn": [
-                "AlAWSAccessAnalyzerCollectorFunctionPolicy"
-            ]
-        },
-        "AlAWSAccessAnalyzerCollectorLambdaTrigger": {
-            "Type": "AWS::Events::Rule",
-            "Properties": {
-                "ScheduleExpression": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "rate(",
-                            {
-                                "Ref": "EventSchedule"
-                            },
-                            " minutes)"
-                        ]
-                    ]
-                },
-                "Targets": [
-                    {
-                        "Id": "AlAWSAccessAnalyzerCollectorLambdaTriggerLambdaTarget",
-                        "Arn": {
-                            "Fn::GetAtt": [
-                                "CreateAlAWSAccessAnalyzerCollectorFunction",
-                                "Arn"
-                            ]
-                        }
-                    }
-                ]
-            }
-        },
-        "AlAWSAccessAnalyzerCollectorLambdaTriggerPermission": {
-            "Type": "AWS::Lambda::Permission",
-            "Properties": {
-                "Action": "lambda:invokeFunction",
-                "Principal": "events.amazonaws.com",
-                "FunctionName": {
-                    "Ref": "CreateAlAWSAccessAnalyzerCollectorFunction"
-                },
-                "SourceArn": {
-                    "Fn::GetAtt": [
-                        "AlAWSAccessAnalyzerCollectorLambdaTrigger",
-                        "Arn"
-                    ]
-                }
-            }
-        }
-    }
-}
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >-
+  A stack that sets up Alert Logic custom checks. You will be billed for the AWS resources
+  used if you create a stack from this template. This template requires setting the
+  "Create IAM resources" parameter to True.
+Parameters:
+  AccountId:
+    Description: Alert Logic Account ID
+    Type: String
+  AccessKeyId:
+    Description: API Access Key ID
+    Type: String
+    MinLength: '5'
+  SecretKey:
+    Description: API Secret Key
+    Type: String
+    NoEcho: 'true'
+    MinLength: '5'
+  StoreKeysInSecretsManager:
+    Type: String
+    Description: Store API Keys in AWS Secrets Manager. Note that AWS charges for accessing secrets in AWS Secrets Manager.
+    Default: true
+    AllowedValues:
+      - true
+      - false
+  AlertLogicApiEndpoint:
+    Type: String
+    Description: AlertLogic API Endpoint to use
+    Default: Production
+    AllowedValues:
+      - Production
+      - Integration
+  EventSchedule:
+    Description: Frequency of IAM Access Analyzer Findings Polling in minutes.
+    Type: Number
+    Default: '60'
+  FunctionsPrefix:
+    Description: >-
+      Generated Lambda Functions Prefix. All Lambda Functions created by this CloudFormation
+      template will be prefixed with this value followed by '-' and function name.
+      Leave this field empty if you want to use CloudFormation generated Lambda Functions
+      names.
+    Type: String
+  RolePrefix:
+    Description: IAM Role Prefix. All IAM Roles created by this CloudFormation template
+      will be prefixed with this value. Leave this field empty if you want to use
+      CloudFormation generated IAM Role names.
+    Type: String
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Alert Logic API Parameters
+        Parameters:
+          - AccountId
+          - AccessKeyId
+          - SecretKey
+          - AlertLogicApiEndpoint
+          - StoreKeysInSecretsManager
+      - Label:
+          default: Template Configuration
+        Parameters:
+          - FunctionsPrefix
+          - RolePrefix
+    ParameterLabels:
+      AccountId:
+        default: Alert Logic Account ID
+      AccessKeyId:
+        default: Access Key ID
+      SecretKey:
+        default: Secret Key
+      DataResidency:
+        default: Account Data Residency
+      StoreKeysInSecretsManager:
+        default: Store Alert Logic Keys in AWS Secrets Manager
+Mappings:
+  ToBoolean:
+    Enable:
+      Enable: 'true'
+      Disable: 'false'
+  ApiUrls:
+    urls:
+      USA: api.cloudinsight.alertlogic.com
+      UK: api.cloudinsight.alertlogic.co.uk
+      Development: api.product.dev.alertlogic.com
+Conditions:
+  HasFunctionsPrefix: !Not
+    - !Equals
+      - ''
+      - !Ref 'FunctionsPrefix'
+  HasRolePrefix: !Not
+    - !Equals
+      - ''
+      - !Ref 'RolePrefix'
+  StoreInSM: !Equals [!Ref StoreKeysInSecretsManager, "true"]
+Resources:
+  ALCredentials:
+    Type: AWS::SecretsManager::Secret
+    Condition: StoreInSM
+    Properties:
+      Description: AlertLogic API Credentials
+      Name: !Join ['', ['ALCredentialsSecret', !Ref AlertLogicApiEndpoint]]
+      SecretString:
+        Fn::Join:
+        - ''
+        - - '{"AccessKeyId":"'
+          - Ref: AccessKeyId
+          - '","SecretKey": "'
+          - Ref: SecretKey
+          - '","AccountId": "'
+          - Ref: AccountId
+          - '"}'
+  AlAWSAccessAnalyzerCollectorLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      RoleName: !If
+        - HasRolePrefix
+        - !Join
+          - '-'
+          - - !Ref 'RolePrefix'
+            - !Ref 'AWS::Region'
+            - AlAWSAccessAnalyzerCollectorRole
+        - !Ref 'AWS::NoValue'
+  AlAWSAccessAnalyzerCollectorFunctionPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: AlAWSAccessAnalyzerCollectorFunctionPolicy
+      Roles:
+        - !Ref 'AlAWSAccessAnalyzerCollectorLambdaRole'
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action: logs:CreateLogGroup
+            Resource: arn:aws:logs:*
+          - Effect: Allow
+            Action:
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource:
+              - arn:aws:logs:*
+          - Effect: Allow
+            Action:
+              - access-analyzer:ListFindings
+              - access-analyzer:ListAnalyzers
+            Resource: '*'
+    DependsOn:
+      - AlAWSAccessAnalyzerCollectorLambdaRole
+  AlAWSAccessAnalyzerCollectorSecretAccessPolicy:
+    Type: AWS::IAM::Policy
+    Condition: StoreInSM
+    Properties:
+      PolicyName: AlAWSAccessAnalyzerCollectorSecretAccessPolicy
+      Roles:
+        - !Ref 'AlAWSAccessAnalyzerCollectorLambdaRole'
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action: secretsmanager:GetSecretValue
+            Resource: !Ref ALCredentials
+    DependsOn:
+      - AlAWSAccessAnalyzerCollectorLambdaRole
+
+  CreateAlAWSAccessAnalyzerCollectorFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !If
+        - HasFunctionsPrefix
+        - !Join
+          - '-'
+          - - !Ref 'FunctionsPrefix'
+            - AlAWSAccessAnalyzerCollector
+        - !Ref 'AWS::NoValue'
+      Handler: al_aws_access_analyzer_collector_function.handler
+      Description: Alert Logic IAM Access Analyzer Collector.
+      Environment:
+        Variables:
+          AccountId: !Ref 'AccountId'
+          AccessKeyId: !If [StoreInSM, !Ref 'AWS::NoValue', !Ref 'AccessKeyId']
+          SecretKey: !If [StoreInSM, !Ref 'AWS::NoValue', !Ref 'SecretKey']
+          SecretName: !If [StoreInSM, !Ref 'ALCredentials', !Ref 'AWS::NoValue']
+          Endpoint: !Ref AlertLogicApiEndpoint
+      Role: !GetAtt 'AlAWSAccessAnalyzerCollectorLambdaRole.Arn'
+      Code:
+        S3Bucket: !Join
+          - .
+          - - alertlogic-public-repo
+            - !Ref 'AWS::Region'
+        S3Key: !Join
+          - /
+          - - lambda_packages
+            - PACKAGE_PLACEHOLDER
+      Runtime: python3.7
+      Timeout: '900'
+    DependsOn:
+      - AlAWSAccessAnalyzerCollectorFunctionPolicy
+  AlAWSAccessAnalyzerCollectorLambdaTrigger:
+    Type: AWS::Events::Rule
+    Properties:
+      ScheduleExpression: !Join
+        - ''
+        - - rate(
+          - !Ref 'EventSchedule'
+          - ' minutes)'
+      Targets:
+        - Id: AlAWSAccessAnalyzerCollectorLambdaTriggerLambdaTarget
+          Arn: !GetAtt 'CreateAlAWSAccessAnalyzerCollectorFunction.Arn'
+  AlAWSAccessAnalyzerCollectorLambdaTriggerPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:invokeFunction
+      Principal: events.amazonaws.com
+      FunctionName: !Ref 'CreateAlAWSAccessAnalyzerCollectorFunction'
+      SourceArn: !GetAtt 'AlAWSAccessAnalyzerCollectorLambdaTrigger.Arn'

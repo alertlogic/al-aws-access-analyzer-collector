@@ -10,3 +10,4 @@ pyyaml>=5.4.1
 six==1.13.0
 urllib3==1.25.8
 activewatch==1.0.2
+alertlogic-sdk-python>=1.0.57
