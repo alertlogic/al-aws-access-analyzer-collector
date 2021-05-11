@@ -46,6 +46,14 @@ AWS_ARN_TYPE_MAP = {
             'aws_type': 'AWS::KMS::Key',
             'asset_type': 'kms-key'
         },
+    'function': {
+            'aws_type': 'AWS::Serverless::Function',
+            'asset_type': 'function'
+    },
+    'sqs': {
+            'aws_type': 'AWS::SQS::Queue',
+            'asset_type': 'kms-key'
+    }
 }
 
 AWS_RESOURCE_MAP = {
@@ -58,7 +66,9 @@ AWS_RESOURCE_MAP = {
     "AWS::EC2::InternetGateway": "igw",
     "AWS::S3::Bucket": "s3-bucket",
     "AWS::IAM::Role": "role",
-    "AWS::KMS::Key": "kms-key"
+    "AWS::KMS::Key": "kms-key",
+    "AWS::Serverless::Function": "function",
+    "AWS::SQS::Queue": "sqs"
 }
 
 def get_asset_key(deployment_type, native_resource_id, native_resource_type, native_account_id):
